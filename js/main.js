@@ -724,28 +724,41 @@ window.addEventListener('DOMContentLoaded', () => {
 
   // ---- 游戏加载后自动开始艾莉对话 ----
   if (dialogueIdx === 0 && !dialogueActive) {
-    // Chrome 语音预热：先制造一个无声片断初始化引擎
-    if (synth) {
-      try {
-        var _warmUp = new SpeechSynthesisUtterance(' ');
-        _warmUp.volume = 0;
-        synth.speak(_warmUp);
-        synth.cancel();
-      } catch(e) {}
-    }
-
     // 先显示对话气泡
     showDialogue(true);
 
-    // 多次尝试播放第一句语音（引擎初始化需要时间）
-    function _playFirst() {
-      if (!dialogueActive) return;
-      stopSpeak();
-      speak(dialogueLines[0]);
+    // 尝试自动播放语音（Chrome 会拦截，但 Firefox/Safari 可以）
+    if (synth) {
+      try {
+        // 预热语音引擎
+        var _warmUp = new SpeechSynthesisUtterance(" ");
+        _warmUp.volume = 0;
+        synth.speak(_warmUp);
+        synth.cancel();
+        // 获取 voices 初始化引擎
+        var v = synth.getVoices();
+        if (v && v.length > 0) cachedVoices = v;
+      } catch(e) {}
+      // 在 load/pageshow 时尝试说话（仅部分浏览器生效）
+      function _trySpeak() {
+        if (!dialogueActive) return;
+        stopSpeak();
+        speak(dialogueLines[0]);
+      }
+      setTimeout(_trySpeak, 100);
+      setTimeout(_trySpeak, 500);
+      setTimeout(_trySpeak, 1200);
     }
-    setTimeout(_playFirst, 100);
-    setTimeout(_playFirst, 500);
-    setTimeout(_playFirst, 1200);
+
+    // 首次用户交互（任意点击/触摸）立即触发语音
+    var _firstTouch = function() {
+      if (dialogueActive && !synth.speaking) {
+        stopSpeak();
+        speak(dialogueLines[dialogueIdx]);
+      }
+      document.removeEventListener("pointerdown", _firstTouch, true);
+    };
+    document.addEventListener("pointerdown", _firstTouch, { capture: true, once: true });
   }
   var dialogueKeyHandler = function(e) {
     if (dialogueActive && (e.code === 'Enter' || e.code === 'Space')) {
