@@ -1,0 +1,37 @@
+/* ============================================================
+ * 语音指挥系统 — 成员 B 负责实现
+ *
+ * 【剧情依赖】window.game.aiPlayer（AI 队友，接收语音指令）
+ * 【提供】window.game.voiceControl
+ * ============================================================ */
+
+/**
+ * 语音指挥系统。通过 Web Speech API 或预录音频识别，让玩家用语音指令指挥 AI 队友。
+ *
+ * @typedef {Object} VoiceControl
+ * @property {function} start - 启动语音监听，开始识别指令
+ * @property {function} stop - 停止语音监听
+ * @property {string} currentCommand - 当前识别到的指令文本（如 "去左边"、"修复"、"停下"）
+ */
+window.game.voiceControl = {
+  currentCommand: '',
+
+  /**
+   * 启动语音识别。
+   * 1. 初始化 Web Speech API 的 SpeechRecognition 实例
+   * 2. 设置语言为中文（'zh-CN'）
+   * 3. 监听 onresult 事件，将识别文本写入 currentCommand
+   * 4. 持续监听（continuous: true）
+   */
+  start() {
+    // TODO: 成员 B 实现语音识别启动
+  },
+
+  /**
+   * 停止语音识别。
+   * 中止 SpeechRecognition 实例，释放麦克风资源。
+   */
+  stop() {
+    // TODO: 成员 B 实现语音识别停止
+  }
+};

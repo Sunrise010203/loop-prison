@@ -1,0 +1,992 @@
+﻿/* ============================================================
+ * 永返 — 深色终端/故障艺术风格样式
+ *
+ * 色彩方案：深黑 #0a0a0a / 荧光绿 #00ff41 / 故障橙 #ff6b35
+ * ============================================================ */
+
+/* === 开始画面 === */
+#start-screen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.92);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 40;
+  pointer-events: auto;
+  transition: opacity 0.5s ease;
+}
+
+#start-screen.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* 标题 — 故障效果 */
+.start-glitch {
+  font-family: 'Courier New', 'Consolas', monospace;
+  font-size: 36px;
+  font-weight: bold;
+  color: #00ff41;
+  text-shadow:
+    0 0 10px rgba(0, 255, 65, 0.6),
+    0 0 40px rgba(0, 255, 65, 0.2);
+  letter-spacing: 4px;
+  position: relative;
+  margin-bottom: 6px;
+}
+
+/* 故障伪影 */
+.start-glitch::before,
+.start-glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+}
+
+.start-glitch::before {
+  color: #ff6b35;
+  animation: glitch-orange 3s infinite;
+  z-index: -1;
+}
+
+.start-glitch::after {
+  color: #00bfff;
+  animation: glitch-blue 3s infinite;
+  z-index: -2;
+}
+
+@keyframes glitch-orange {
+  0%, 92%, 100% { opacity: 0; transform: translate(0, 0); }
+  93% { opacity: 0.4; transform: translate(-3px, 1px); }
+  94% { opacity: 0; transform: translate(2px, -1px); }
+}
+
+@keyframes glitch-blue {
+  0%, 95%, 100% { opacity: 0; transform: translate(0, 0); }
+  96% { opacity: 0.3; transform: translate(2px, -1px); }
+  97% { opacity: 0; transform: translate(-1px, 1px); }
+}
+
+/* 副标题 */
+.start-subtitle {
+  font-family: 'Courier New', 'Consolas', monospace;
+  font-size: 16px;
+  color: #888888;
+  letter-spacing: 8px;
+  margin-bottom: 20px;
+  text-shadow: 0 0 6px rgba(255, 107, 53, 0.2);
+}
+
+/* 分隔线 */
+.start-divider {
+  width: 300px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #00ff41, transparent);
+  margin-bottom: 20px;
+  box-shadow: 0 0 6px rgba(0, 255, 65, 0.4);
+}
+
+/* 描述文字 */
+.start-desc {
+  font-family: 'Consolas', 'Courier New', monospace;
+  font-size: 13px;
+  color: #00cc33;
+  letter-spacing: 2px;
+  margin-bottom: 4px;
+  text-shadow: 0 0 4px rgba(0, 255, 65, 0.2);
+}
+
+.start-desc-sub {
+  font-family: 'Consolas', 'Courier New', monospace;
+  font-size: 11px;
+  color: #666666;
+  letter-spacing: 1px;
+  margin-bottom: 32px;
+}
+
+/* 开始按钮 */
+.start-btn {
+  width: 260px;
+  padding: 14px 0;
+  font-family: 'Courier New', 'Consolas', monospace;
+  font-size: 18px;
+  font-weight: bold;
+  letter-spacing: 4px;
+  text-align: center;
+  cursor: pointer;
+  background: rgba(0, 0, 0, 0.85);
+  border: 2px solid #00ff41;
+  color: #00ff41;
+  text-shadow: 0 0 10px rgba(0, 255, 65, 0.5);
+  box-shadow: 0 0 16px rgba(0, 255, 65, 0.25), inset 0 0 10px rgba(0, 255, 65, 0.08);
+  transition: all 0.25s ease;
+  animation: btn-glow 2s ease-in-out infinite;
+}
+
+.start-btn:hover {
+  background: rgba(0, 255, 65, 0.1);
+  box-shadow: 0 0 28px rgba(0, 255, 65, 0.5), inset 0 0 16px rgba(0, 255, 65, 0.15);
+  transform: scale(1.04);
+}
+
+.start-btn:active {
+  transform: scale(0.96);
+  transition: transform 0.05s ease;
+}
+
+@keyframes btn-glow {
+  0%, 100% { box-shadow: 0 0 16px rgba(0, 255, 65, 0.25), inset 0 0 10px rgba(0, 255, 65, 0.08); }
+  50%      { box-shadow: 0 0 24px rgba(0, 255, 65, 0.4), inset 0 0 14px rgba(0, 255, 65, 0.12); }
+}
+
+/* 提示文字 */
+.start-hint {
+  font-family: 'Consolas', 'Courier New', monospace;
+  font-size: 10px;
+  color: #444444;
+  letter-spacing: 1px;
+  margin-top: 16px;
+}
+
+/* === 开始画面顶部（NPC + 对话） === */
+.start-top-row {
+  position: absolute;
+  top: 24px;
+  left: 30px;
+  right: 30px;
+  display: flex;
+  align-items: flex-start;
+  gap: 18px;
+}
+
+/* === NPC 角色造型（CSS 绘制） === */
+.npc-figure {
+  flex-shrink: 0;
+  width: 72px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: transform 0.2s ease;
+}
+
+.npc-figure:hover {
+  transform: scale(1.08);
+}
+
+.npc-figure:hover .npc-label {
+  color: #ff6b35;
+  text-shadow: 0 0 8px rgba(255, 107, 53, 0.6);
+}
+
+/* 兜帽 */
+.npc-hood {
+  width: 54px;
+  height: 32px;
+  background: #1a1a2e;
+  border: 1.5px solid #ff6b35;
+  border-bottom: none;
+  border-radius: 28px 28px 0 0;
+  box-shadow: 0 0 8px rgba(255, 107, 53, 0.15), inset 0 0 12px rgba(255, 107, 53, 0.05);
+}
+
+/* 脸 */
+.npc-face {
+  width: 48px;
+  height: 26px;
+  background: #1a1a2e;
+  border-left: 1.5px solid #ff6b35;
+  border-right: 1.5px solid #ff6b35;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  position: relative;
+}
+
+/* 眼睛 */
+.npc-eye {
+  width: 4px;
+  height: 4px;
+  background: #00ff41;
+  border-radius: 50%;
+  box-shadow: 0 0 4px #00ff41, 0 0 8px rgba(0, 255, 65, 0.5);
+  animation: npc-blink 3s infinite;
+}
+
+@keyframes npc-blink {
+  0%, 95%, 100% { transform: scaleY(1); }
+  96% { transform: scaleY(0.1); }
+}
+
+/* 嘴 */
+.npc-mouth {
+  width: 8px;
+  height: 2px;
+  background: #00ff41;
+  opacity: 0.6;
+  margin-top: 1px;
+}
+
+/* 身体 */
+.npc-body {
+  width: 52px;
+  height: 40px;
+  background: #1a1a2e;
+  border: 1.5px solid #ff6b35;
+  border-top: none;
+  border-radius: 0 0 4px 4px;
+  box-shadow: 0 0 6px rgba(255, 107, 53, 0.1);
+  position: relative;
+}
+
+/* 身体上的终端标记 */
+.npc-body::after {
+  content: '>_';
+  position: absolute;
+  bottom: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Consolas', 'Courier New', monospace;
+  font-size: 8px;
+  color: #00ff41;
+  opacity: 0.4;
+  animation: npc-cursor 1.2s infinite;
+}
+
+@keyframes npc-cursor {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.8; }
+}
+
+/* NPC 标签 */
+.npc-label {
+  font-family: 'Consolas', 'Courier New', monospace;
+  font-size: 8px;
+  color: #555555;
+  letter-spacing: 1px;
+  margin-top: 6px;
+  transition: all 0.2s ease;
+}
+
+/* === 对话气泡 === */
+.npc-dialogue {
+  flex: 1;
+  min-height: 72px;
+  background: rgba(0, 0, 0, 0.88);
+  border: 1px solid rgba(255, 107, 53, 0.35);
+  padding: 12px 16px;
+  font-family: 'Consolas', 'Courier New', monospace;
+  color: #dddddd;
+  font-size: 12px;
+  line-height: 1.7;
+  letter-spacing: 0.5px;
+  position: relative;
+  box-shadow: 0 0 12px rgba(255, 107, 53, 0.1), inset 0 0 20px rgba(0, 0, 0, 0.5);
+  transition: opacity 0.25s ease;
+}
+
+/* 对话气泡左侧三角箭头 */
+.npc-dialogue::before {
+  content: '';
+  position: absolute;
+  top: 16px;
+  left: -8px;
+  width: 0;
+  height: 0;
+  border-top: 7px solid transparent;
+  border-bottom: 7px solid transparent;
+  border-right: 8px solid rgba(255, 107, 53, 0.35);
+}
+
+.npc-dialogue.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.dialogue-text {
+  color: #cccccc;
+  text-shadow: 0 0 2px rgba(200, 200, 200, 0.2);
+  min-height: 20px;
+}
+
+/* 说话者名字 */
+.dialogue-text .speaker {
+  color: #ff6b35;
+  font-weight: bold;
+  letter-spacing: 1px;
+  text-shadow: 0 0 6px rgba(255, 107, 53, 0.4);
+  margin-right: 6px;
+}
+
+.dialogue-next {
+  font-size: 10px;
+  color: #555555;
+  letter-spacing: 1px;
+  margin-top: 8px;
+  animation: npc-cursor 1.8s infinite;
+}
+
+.npc-dialogue:not(.hidden) .dialogue-next {
+  cursor: pointer;
+}
+
+.npc-dialogue:not(.hidden):hover .dialogue-next {
+  color: #ff6b35;
+}
+
+/* ====== 对话终态（已读完全部内容） ====== */
+.npc-figure.talked .npc-label {
+  color: #666666;
+}
+
+/* === 艾莉 AI 头像（赛博朋克风格） === */
+.ally-avatar {
+  flex-shrink: 0;
+  width: 90px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: transform 0.2s ease;
+  position: relative;
+}
+
+.ally-avatar:hover {
+  transform: scale(1.05);
+}
+
+.ally-avatar:hover .ally-label {
+  color: #ff6b35;
+  text-shadow: 0 0 8px rgba(255, 107, 53, 0.6);
+}
+
+.ally-avatar-img {
+  width: 56px;
+  height: 56px;
+  border: 2px solid #ff6b35;
+  border-radius: 50%;
+  position: relative;
+  box-shadow: 0 0 15px rgba(255, 107, 53, 0.3), inset 0 0 20px rgba(255, 107, 53, 0.1);
+  object-fit: cover;
+  background: linear-gradient(135deg, #1a1a2e 0%, #0a0a1a 100%);
+}
+
+.ally-avatar-img::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 40px;
+  height: 40px;
+  border: 1px solid rgba(0, 255, 65, 0.3);
+  border-radius: 50%;
+  animation: ally-pulse 2s infinite;
+}
+
+@keyframes ally-pulse {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.5; }
+  50% { transform: translate(-50%, -50%) scale(1.1); opacity: 0.8; }
+}
+
+.ally-core {
+  width: 20px;
+  height: 20px;
+  background: radial-gradient(circle, #ff6b35 0%, #1a1a2e 70%);
+  border: 1px solid #ff6b35;
+  border-radius: 50%;
+  margin-top: 8px;
+  box-shadow: 0 0 10px rgba(255, 107, 53, 0.5);
+  animation: ally-glow 1.5s infinite alternate;
+}
+
+@keyframes ally-glow {
+  0% { box-shadow: 0 0 5px rgba(255, 107, 53, 0.3); }
+  100% { box-shadow: 0 0 15px rgba(255, 107, 53, 0.8); }
+}
+
+.ally-label {
+  margin-top: 6px;
+  font-size: 10px;
+  color: #ff6b35;
+  text-shadow: 0 0 4px rgba(255, 107, 53, 0.4);
+  transition: all 0.2s ease;
+}
+
+.ally-dialogue {
+  position: relative;
+  background: rgba(10, 10, 26, 0.95);
+  border: 1.5px solid #ff6b35;
+  border-radius: 8px;
+  padding: 16px 20px;
+  max-width: 480px;
+  color: #e0e0e0;
+  font-size: 14px;
+  line-height: 1.6;
+  box-shadow: 0 0 20px rgba(255, 107, 53, 0.2), inset 0 0 30px rgba(255, 107, 53, 0.05);
+  animation: dialogue-fadein 0.3s ease;
+}
+
+.ally-dialogue::before {
+  content: '';
+  position: absolute;
+  left: -10px;
+  top: 20px;
+  width: 0;
+  height: 0;
+  border-top: 8px solid transparent;
+  border-bottom: 8px solid transparent;
+  border-right: 10px solid #ff6b35;
+}
+
+.ally-dialogue.hidden {
+  display: none;
+}
+
+.ally-dialogue .speaker {
+  color: #ff6b35;
+  font-weight: bold;
+}
+
+.ally-dialogue .dialogue-text {
+  margin-bottom: 10px;
+  padding-right: 50px;
+  min-height: 40px;
+}
+
+.ally-dialogue .dialogue-next {
+  font-size: 11px;
+  color: #888;
+  text-align: right;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.ally-dialogue .dialogue-next:hover {
+  color: #ff6b35;
+}
+
+.ally-dialogue .dialogue-skip {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  font-size: 10px;
+  color: #666;
+  cursor: pointer;
+  padding: 4px 8px;
+  border: 1px solid #444;
+  border-radius: 3px;
+  transition: all 0.2s ease;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 10;
+}
+
+.ally-dialogue .dialogue-skip:hover {
+  color: #ff6b35;
+  border-color: #ff6b35;
+}
+
+.ally-avatar.talked .ally-label {
+  color: #666666;
+}
+
+/* === 基础重置 === */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #0a0a0a;
+  color: #00ff41;
+  font-family: 'Courier New', 'Consolas', monospace;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+/* === 全屏扫描线效果 === */
+.scanlines {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 9999;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.05) 2px,
+    rgba(0, 0, 0, 0.05) 4px
+  );
+}
+
+/* === 主容器 === */
+#game-container {
+  position: relative;
+  width: 840px;
+}
+
+/* === Canvas 包装器（发光边框 + 伪影） === */
+.canvas-wrapper {
+  position: relative;
+  width: 800px;
+  height: 600px;
+  margin: 0 auto;
+  border: 2px solid #00ff41;
+  box-shadow:
+    0 0 10px rgba(0, 255, 65, 0.3),
+    0 0 30px rgba(0, 255, 65, 0.1),
+    inset 0 0 10px rgba(0, 255, 65, 0.05);
+  transition: box-shadow 0.5s ease, border-color 0.5s ease;
+}
+
+/* Canvas 上方扫描线伪影 */
+.canvas-wrapper::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 10;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 3px,
+    rgba(0, 255, 65, 0.02) 3px,
+    rgba(0, 255, 65, 0.02) 4px
+  );
+}
+
+/* Canvas 角落装饰 */
+.canvas-wrapper::after {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  width: 20px;
+  height: 20px;
+  border-top: 2px solid #ff6b35;
+  border-left: 2px solid #ff6b35;
+  z-index: 20;
+  pointer-events: none;
+}
+
+canvas#gameCanvas {
+  display: block;
+  background: #0a0a1a;
+}
+
+/* === UI 覆盖层 === */
+#ui-layer {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  right: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  pointer-events: none;
+  z-index: 20;
+}
+
+/* 跳过按钮 */
+.skip-btn {
+  pointer-events: auto;
+  cursor: pointer;
+  color: #888888;
+  border-color: rgba(136, 136, 136, 0.3);
+  text-shadow: none;
+  transition: all 0.2s ease;
+}
+
+.skip-btn:hover {
+  color: #ff6b35;
+  border-color: rgba(255, 107, 53, 0.5);
+  text-shadow: 0 0 6px rgba(255, 107, 53, 0.3);
+}
+
+/* === UI 面板通用 === */
+.ui-panel {
+  background: rgba(0, 0, 0, 0.75);
+  border: 1px solid rgba(0, 255, 65, 0.3);
+  padding: 6px 14px;
+  font-size: 13px;
+  letter-spacing: 1px;
+  text-shadow: 0 0 5px currentColor;
+  white-space: nowrap;
+}
+
+/* === 计时器 === */
+#timer {
+  color: #00ff41;
+  transition: color 0.3s ease;
+  margin-left: 15px;
+}
+
+/* 超时闪烁动画 */
+@keyframes blink-red {
+  0%, 100% { color: #ff3333; text-shadow: 0 0 8px #ff0000; }
+  50%      { color: #ff6b35; text-shadow: 0 0 3px #ff6b35; }
+}
+
+#timer.timeout {
+  animation: blink-red 0.5s infinite;
+}
+
+/* === 艾莉状态 === */
+#ally-status {
+  color: #00ff41;
+  text-shadow: 0 0 8px rgba(0, 255, 65, 0.6);
+  transition: color 0.3s ease, text-shadow 0.3s ease;
+  margin-right: 12px;
+}
+
+#ally-status.ally-damaged {
+  color: #ff3333;
+  text-shadow: 0 0 10px #ff0000;
+  animation: blink-red 0.6s infinite;
+}
+
+/* === 系统日志 === */
+#event-log {
+  position: relative;
+  width: 800px;
+  height: 120px;
+  margin: 4px auto 0;
+  padding: 8px 12px;
+  overflow-y: auto;
+  background: rgba(0, 0, 0, 0.85);
+  border: 1px solid rgba(0, 255, 65, 0.2);
+  font-family: 'Consolas', 'Courier New', monospace;
+  font-size: 12px;
+  line-height: 1.6;
+  color: #00cc33;
+  z-index: 10;
+}
+
+/* 日志滚动条美化 */
+#event-log::-webkit-scrollbar {
+  width: 4px;
+}
+
+#event-log::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+#event-log::-webkit-scrollbar-thumb {
+  background: rgba(0, 255, 65, 0.3);
+  border-radius: 2px;
+}
+
+/* 单条日志 */
+.log-entry {
+  padding: 1px 0;
+  border-bottom: 1px solid rgba(0, 255, 65, 0.06);
+  word-break: break-all;
+}
+
+/* 警告类日志 */
+.log-entry.warning {
+  color: #ff6b35;
+  text-shadow: 0 0 4px rgba(255, 107, 53, 0.4);
+}
+
+/* 成功类日志 */
+.log-entry.success {
+  color: #00ff41;
+  text-shadow: 0 0 6px rgba(0, 255, 65, 0.5);
+}
+
+/* === 通关/失败按钮覆盖层 === */
+#game-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: none;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 130px;
+  z-index: 30;
+  pointer-events: none;
+}
+
+#game-overlay.visible {
+  display: flex;
+  pointer-events: auto;
+}
+
+.game-btn {
+  display: none;
+  width: 220px;
+  padding: 12px 0;
+  font-family: 'Courier New', 'Consolas', monospace;
+  font-size: 16px;
+  font-weight: bold;
+  letter-spacing: 2px;
+  text-align: center;
+  cursor: pointer;
+  background: rgba(0, 0, 0, 0.85);
+  border: 2px solid #00ff41;
+  color: #00ff41;
+  text-shadow: 0 0 8px rgba(0, 255, 65, 0.5);
+  box-shadow: 0 0 12px rgba(0, 255, 65, 0.2), inset 0 0 8px rgba(0, 255, 65, 0.08);
+  transition: all 0.2s ease;
+}
+
+.game-btn.visible {
+  display: block;
+}
+
+.game-btn:hover {
+  background: rgba(0, 255, 65, 0.1);
+  box-shadow: 0 0 20px rgba(0, 255, 65, 0.4), inset 0 0 12px rgba(0, 255, 65, 0.15);
+  transform: scale(1.03);
+}
+
+.game-btn:active {
+  transform: scale(0.98);
+}
+
+#btn-retry {
+  border-color: #ff6b35;
+  color: #ff6b35;
+  text-shadow: 0 0 8px rgba(255, 107, 53, 0.5);
+  box-shadow: 0 0 12px rgba(255, 107, 53, 0.2), inset 0 0 8px rgba(255, 107, 53, 0.08);
+}
+
+#btn-retry:hover {
+  background: rgba(255, 107, 53, 0.1);
+  box-shadow: 0 0 20px rgba(255, 107, 53, 0.4), inset 0 0 12px rgba(255, 107, 53, 0.15);
+}
+
+/* === LLM / 语音控制面板 === */
+#llm-panel {
+  width: 800px;
+  margin: 4px auto 0;
+  padding: 8px 12px;
+  background: rgba(0, 0, 0, 0.85);
+  border: 1px solid rgba(255, 107, 53, 0.3);
+  font-family: 'Consolas', 'Courier New', monospace;
+  font-size: 12px;
+  z-index: 10;
+}
+
+.llm-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.llm-row:last-child {
+  margin-bottom: 0;
+}
+
+.llm-row-info {
+  margin-top: 2px;
+}
+
+.llm-input {
+  flex: 1;
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(0, 255, 65, 0.2);
+  color: #00ff41;
+  font-family: 'Consolas', 'Courier New', monospace;
+  font-size: 11px;
+  padding: 4px 8px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.llm-input:focus {
+  border-color: rgba(0, 255, 65, 0.6);
+  box-shadow: 0 0 6px rgba(0, 255, 65, 0.2);
+}
+
+.llm-input::placeholder {
+  color: rgba(0, 255, 65, 0.3);
+}
+
+.llm-input-endpoint {
+  flex: 2;
+}
+
+.llm-input-model {
+  flex: 0.8;
+  min-width: 100px;
+}
+
+.llm-btn {
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 107, 53, 0.4);
+  color: #ff6b35;
+  font-family: 'Consolas', 'Courier New', monospace;
+  font-size: 11px;
+  padding: 4px 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.llm-btn:hover:not(:disabled) {
+  background: rgba(255, 107, 53, 0.1);
+  border-color: #ff6b35;
+  box-shadow: 0 0 8px rgba(255, 107, 53, 0.3);
+}
+
+.llm-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* === 语音按钮（放大 + 醒目） === */
+.llm-btn-voice {
+  padding: 10px 20px !important;
+  font-size: 15px !important;
+  font-weight: bold !important;
+  letter-spacing: 2px !important;
+  border: 2px solid #ff6b35 !important;
+  color: #ff6b35 !important;
+  background: rgba(255, 107, 53, 0.08) !important;
+  text-shadow: 0 0 10px rgba(255, 107, 53, 0.5) !important;
+  box-shadow: 0 0 12px rgba(255, 107, 53, 0.3), inset 0 0 8px rgba(255, 107, 53, 0.1) !important;
+  transition: all 0.2s ease !important;
+  animation: voice-btn-pulse 2s ease-in-out infinite;
+}
+
+.llm-btn-voice:hover:not(:disabled) {
+  background: rgba(255, 107, 53, 0.2) !important;
+  box-shadow: 0 0 20px rgba(255, 107, 53, 0.5), inset 0 0 14px rgba(255, 107, 53, 0.2) !important;
+  transform: scale(1.05);
+}
+
+.llm-btn-voice:disabled {
+  opacity: 0.4;
+  animation: none;
+}
+
+@keyframes voice-btn-pulse {
+  0%, 100% { box-shadow: 0 0 12px rgba(255, 107, 53, 0.3), inset 0 0 8px rgba(255, 107, 53, 0.1); }
+  50%      { box-shadow: 0 0 22px rgba(255, 107, 53, 0.5), inset 0 0 14px rgba(255, 107, 53, 0.2); }
+}
+
+.llm-status {
+  font-size: 11px;
+  color: #888888;
+  white-space: nowrap;
+  margin-left: auto;
+}
+
+.llm-command {
+  font-size: 11px;
+  color: #00ff41;
+  text-shadow: 0 0 4px rgba(0, 255, 65, 0.3);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* === LLM 选择器/下拉框 === */
+.llm-select {
+  flex: 0.6;
+  min-width: 100px;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  background: rgba(0, 0, 0, 0.6) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%2300ff41' opacity='0.5'/%3E%3C/svg%3E") no-repeat right 8px center;
+  padding-right: 24px;
+}
+
+.llm-select option {
+  background: #0a0a0a;
+  color: #00ff41;
+}
+
+/* === LLM 错误信息 === */
+.llm-error {
+  flex: 1;
+  font-size: 11px;
+  color: #ff6b35;
+  text-shadow: 0 0 4px rgba(255, 107, 53, 0.3);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* === 实时语音识别文本显示 === */
+.voice-interim {
+  flex: 1;
+  font-size: 13px;
+  color: #888888;
+  text-shadow: 0 0 4px rgba(0, 255, 65, 0.2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: color 0.2s ease, text-shadow 0.2s ease;
+}
+
+.voice-interim-listening {
+  color: #00ff41;
+  text-shadow: 0 0 8px rgba(0, 255, 65, 0.5);
+  animation: voice-pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes voice-pulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.6; }
+}
+
+/* === 音量指示器 === */
+.volume-indicator {
+  font-size: 12px;
+  color: #00ff41;
+  text-shadow: 0 0 4px rgba(0, 255, 65, 0.3);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: color 0.2s ease;
+}
+
+.volume-loud {
+  color: #ff6b35;
+  text-shadow: 0 0 8px rgba(255, 107, 53, 0.5);
+}
+
+/* === 手动重置按钮（棕色风格） === */
+.llm-btn-reset {
+    background: rgba(139, 90, 43, 0.25) !important;
+    border: 1px solid rgba(139, 90, 43, 0.5) !important;
+    color: #d4a04a !important;
+    font-size: 11px !important;
+    padding: 4px 10px !important;
+    transition: all 0.2s ease !important;
+}
+
+.llm-btn-reset:hover:not(:disabled) {
+    background: rgba(139, 90, 43, 0.4) !important;
+    border-color: #d4a04a !important;
+    box-shadow: 0 0 8px rgba(139, 90, 43, 0.4) !important;
+}
