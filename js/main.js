@@ -662,15 +662,16 @@ window.addEventListener('DOMContentLoaded', () => {
   var dialogueIdx = 0;
   var dialogueActive = false;
 
-  function showDialogue() {
+  function showDialogue(silent) {
     if (dialogueIdx >= dialogueLines.length) return;
     dialogueActive = true;
     dialogueEl.classList.remove('hidden');
     dialogueText.innerHTML = dialogueLines[dialogueIdx];
     dialogueNext.textContent = dialogueIdx < dialogueLines.length - 1 ? '[ 点击继续 ]' : '[ 我准备好了 ]';
-    speak(dialogueLines[dialogueIdx]);
+    if (!silent) {
+      speak(dialogueLines[dialogueIdx]);
+    }
   }
-
   function advanceDialogue() {
     dialogueIdx++;
     if (dialogueIdx >= dialogueLines.length) {
@@ -723,7 +724,23 @@ window.addEventListener('DOMContentLoaded', () => {
 
   // ---- 游戏加载后自动开始艾莉对话 ----
   if (dialogueIdx === 0 && !dialogueActive) {
-    showDialogue();
+    showDialogue(true);  // 无声展示，语音等用户点击后触发
+
+    // 注册首次点击激活语音（Chrome 需要用户手势）
+    var _firstGesture = function() {
+      if (dialogueActive && dialogueIdx >= 0 && dialogueIdx < dialogueLines.length) {
+        stopSpeak();
+        speak(dialogueLines[dialogueIdx]);
+      }
+      if (synth) {
+        var v = synth.getVoices();
+        if (v && v.length > 0) cachedVoices = v;
+      }
+      document.removeEventListener('click', _firstGesture, true);
+      document.removeEventListener('touchstart', _firstGesture, true);
+    };
+    document.addEventListener('click', _firstGesture, true);
+    document.addEventListener('touchstart', _firstGesture, true);
   }
 
   var dialogueKeyHandler = function(e) {
