@@ -24,9 +24,9 @@
 #start-screen.hidden {
   opacity: 0;
   pointer-events: none;
+  visibility: hidden;
+  transition: opacity 0.5s ease, visibility 0.5s ease;
 }
-
-/* 标题 — 故障效果 */
 .start-glitch {
   font-family: 'Courier New', 'Consolas', monospace;
   font-size: 36px;
@@ -990,3 +990,4 @@ canvas#gameCanvas {
     border-color: #d4a04a !important;
     box-shadow: 0 0 8px rgba(139, 90, 43, 0.4) !important;
 }
+

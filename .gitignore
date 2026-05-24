@@ -1,0 +1,13 @@
+﻿# Vercel
+.vercel
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Python
+*.pyc
+__pycache__
+
+# Node
+node_modules
