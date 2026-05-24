@@ -724,25 +724,29 @@ window.addEventListener('DOMContentLoaded', () => {
 
   // ---- 游戏加载后自动开始艾莉对话 ----
   if (dialogueIdx === 0 && !dialogueActive) {
-    showDialogue(true);  // 无声展示，语音等用户点击后触发
+    // Chrome 语音预热：先制造一个无声片断初始化引擎
+    if (synth) {
+      try {
+        var _warmUp = new SpeechSynthesisUtterance(' ');
+        _warmUp.volume = 0;
+        synth.speak(_warmUp);
+        synth.cancel();
+      } catch(e) {}
+    }
 
-    // 注册首次点击激活语音（Chrome 需要用户手势）
-    var _firstGesture = function() {
-      if (dialogueActive && dialogueIdx >= 0 && dialogueIdx < dialogueLines.length) {
-        stopSpeak();
-        speak(dialogueLines[dialogueIdx]);
-      }
-      if (synth) {
-        var v = synth.getVoices();
-        if (v && v.length > 0) cachedVoices = v;
-      }
-      document.removeEventListener('click', _firstGesture, true);
-      document.removeEventListener('touchstart', _firstGesture, true);
-    };
-    document.addEventListener('click', _firstGesture, true);
-    document.addEventListener('touchstart', _firstGesture, true);
+    // 先显示对话气泡
+    showDialogue(true);
+
+    // 多次尝试播放第一句语音（引擎初始化需要时间）
+    function _playFirst() {
+      if (!dialogueActive) return;
+      stopSpeak();
+      speak(dialogueLines[0]);
+    }
+    setTimeout(_playFirst, 100);
+    setTimeout(_playFirst, 500);
+    setTimeout(_playFirst, 1200);
   }
-
   var dialogueKeyHandler = function(e) {
     if (dialogueActive && (e.code === 'Enter' || e.code === 'Space')) {
       e.preventDefault();
@@ -774,5 +778,6 @@ window.addEventListener('DOMContentLoaded', () => {
   };
   window.addEventListener('keydown', onStartKey);
 });
+
 
 
